@@ -1,0 +1,44 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+
+interface BookingConfirmationProps {
+  roomName: string
+  date: string
+  time: string
+  name: string
+  email: string
+}
+
+export function BookingConfirmation({ roomName, date, time, name, email }: BookingConfirmationProps) {
+  const supabase = createClientComponentClient()
+
+  // Save booking to Supabase
+  const saveBooking = async () => {
+    const { data, error } = await supabase
+      .from('bookings')
+      .insert([
+        {
+          room_name: roomName,
+          date,
+          time,
+          name,
+          email,
+        }
+      ])
+
+    if (error) {
+      console.error('Error saving booking:', error)
+    }
+  }
+
+  // Call saveBooking when component mounts
+  React.useEffect(() => {
+    saveBooking()
+  }, [])
+
+  return (
+    <Card>
+      // ... existing JSX code ...
+    </Card>
+  )
+}
